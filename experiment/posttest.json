@@ -2,38 +2,157 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "Which of the following is NOT a property of a Minimum Spanning Tree?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It connects all vertices in the graph",
+        "b": "It has exactly (V-1) edges for V vertices",
+        "c": "It contains the shortest path between any two vertices",
+        "d": "It has no cycles"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. This IS a property of MST. A spanning tree must connect all vertices.",
+        "b": "Incorrect. This IS a property of MST. Any spanning tree has exactly (V-1) edges.",
+        "c": "Correct! This is NOT a property of MST. An MST minimizes the total weight of all edges, but doesn't guarantee shortest paths between individual pairs of vertices. That's a different problem.",
+        "d": "Incorrect. This IS a property of MST. Trees by definition are acyclic."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In which scenario would a graph NOT have a spanning tree?",
+      "answers": {
+        "a": "When the graph has weighted edges",
+        "b": "When the graph is disconnected",
+        "c": "When the graph has negative edge weights",
+        "d": "When the graph has more than 10 vertices"
+      },
+      "explanations": {
+        "a": "Incorrect. Edge weights don't prevent a spanning tree from existing. MST algorithms work specifically with weighted graphs.",
+        "b": "Correct! A disconnected graph cannot have a spanning tree because a tree must be connected. If the graph has multiple disconnected components, we can only create a spanning forest.",
+        "c": "Incorrect. Negative edge weights don't prevent spanning trees from existing. MST algorithms can handle negative weights.",
+        "d": "Incorrect. The number of vertices doesn't affect the existence of spanning trees. Any connected graph has spanning trees."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is the minimum possible weight of a spanning tree in a graph with edges: XY(2), XZ(5), YZ(1), YW(3), ZW(4)?",
+      "answers": {
+        "a": "6",
+        "b": "8",
+        "c": "10",
+        "d": "15"
+      },
+      "explanations": {
+        "a": "Correct! The MST includes edges YZ(1), XY(2), YW(3) for a total weight of 1+2+3=6. This connects all 4 vertices (X,Y,Z,W) with minimum total weight.",
+        "b": "Incorrect. This would include an unnecessary edge. The minimum is 6.",
+        "c": "Incorrect. This is too high. You can connect all vertices with total weight 6.",
+        "d": "Incorrect. This would be the sum of all edges, but we only need 3 edges to span 4 vertices."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "In Prim's algorithm, which edge is chosen at each step?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The globally minimum weight edge not yet selected",
+        "b": "The minimum weight edge that connects the current tree to a new vertex",
+        "c": "Any edge that doesn't create a cycle",
+        "d": "The maximum weight edge to ensure optimal selection"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. This describes Kruskal's approach. Prim's doesn't consider all edges globally.",
+        "b": "Correct! Prim's algorithm always selects the minimum weight edge that connects any vertex in the current tree to any vertex not yet in the tree.",
+        "c": "Incorrect. While avoiding cycles is important, Prim's specifically chooses the minimum weight edge among valid options.",
+        "d": "Incorrect. We want minimum weight edges, not maximum weight edges."
+      },
+      "correctAnswer": "b",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given edges AB(1), AC(4), BC(2), BD(3), CD(1), DE(2), CE(5), what is the total weight of the MST using Kruskal's algorithm?",
+      "answers": {
+        "a": "7",
+        "b": "8",
+        "c": "9",
+        "d": "10"
+      },
+      "explanations": {
+        "a": "Incorrect. This is too low. Check your edge selections carefully.",
+        "b": "Incorrect. Recalculate by selecting edges in order: AB(1), CD(1), BC(2), BD(3), DE(2).",
+        "c": "Correct! Kruskal's selects edges in order: AB(1), CD(1), BC(2), DE(2), BD(3). Total: 1+1+2+2+3=9. Note that CE(5) and AC(4) are skipped because they would create cycles.",
+        "d": "Incorrect. This includes an extra edge that would create a cycle."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the time complexity of Kruskal's algorithm?",
+      "answers": {
+        "a": "O(V²) where V is the number of vertices",
+        "b": "O(E log E) where E is the number of edges",
+        "c": "O(V log V) where V is the number of vertices",
+        "d": "O(E) where E is the number of edges"
+      },
+      "explanations": {
+        "a": "Incorrect. This might be the complexity of a naive implementation or Prim's with adjacency matrix.",
+        "b": "Correct! Kruskal's algorithm is dominated by the edge sorting step, which takes O(E log E). The Union-Find operations are nearly linear.",
+        "c": "Incorrect. The complexity depends primarily on the number of edges, not vertices.",
+        "d": "Incorrect. Linear time is not possible due to the sorting requirement."
+      },
+      "correctAnswer": "b",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Consider a graph where some edges have equal weights. Which statement about MSTs is true?",
+      "answers": {
+        "a": "No MST can exist when edge weights are equal",
+        "b": "There will be exactly one MST regardless of equal weights",
+        "c": "Multiple MSTs with the same total weight may exist",
+        "d": "Kruskal's and Prim's will always produce different MSTs"
+      },
+      "explanations": {
+        "a": "Incorrect. Equal edge weights don't prevent MSTs from existing.",
+        "b": "Incorrect. Equal weights can lead to multiple valid MSTs.",
+        "c": "Correct! When edge weights are tied, there can be multiple ways to break ties, leading to different MSTs with the same optimal total weight.",
+        "d": "Incorrect. Both algorithms might produce the same MST even with tied weights, depending on tie-breaking rules."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which data structure is most efficient for implementing Prim's algorithm?",
+      "answers": {
+        "a": "Stack",
+        "b": "Queue",
+        "c": "Priority Queue (Min-Heap)",
+        "d": "Hash Table"
+      },
+      "explanations": {
+        "a": "Incorrect. A stack (LIFO) doesn't help with finding minimum weight edges efficiently.",
+        "b": "Incorrect. A queue (FIFO) doesn't prioritize edges by weight.",
+        "c": "Correct! A priority queue (min-heap) efficiently maintains the minimum weight edge that can extend the current MST, which is exactly what Prim's algorithm needs.",
+        "d": "Incorrect. While hash tables are useful for lookups, they don't help with finding minimum weight edges."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In a dense graph with V vertices and approximately V² edges, which algorithm is generally more efficient?",
+      "answers": {
+        "a": "Kruskal's algorithm because it handles more edges better",
+        "b": "Prim's algorithm with a binary heap implementation",
+        "c": "Both algorithms have identical performance",
+        "d": "Neither algorithm works efficiently on dense graphs"
+      },
+      "explanations": {
+        "a": "Incorrect. Kruskal's performance degrades with more edges due to the O(E log E) sorting requirement.",
+        "b": "Correct! For dense graphs, Prim's algorithm (especially with fibonacci heap achieving O(E + V log V)) is generally more efficient than Kruskal's O(E log E), since E ≈ V² in dense graphs.",
+        "c": "Incorrect. The algorithms have different time complexities and perform differently based on graph density.",
+        "d": "Incorrect. Both algorithms work on dense graphs, but Prim's is typically more efficient for such cases."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
     }
   ]
 }
