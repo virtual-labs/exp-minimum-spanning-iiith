@@ -27,7 +27,7 @@ class MobileDetection {
     ];
 
     // Check screen size (additional check for small screens)
-    const isSmallScreen = window.innerWidth <= 768 || window.innerHeight <= 600;
+    const isSmallScreen = window.innerWidth <= 1000 || window.innerHeight <= 1000;
     
     // Check touch capability
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -244,7 +244,117 @@ class MobileDetection {
   }
 
   continueAnyway() {
+    this.forceDesktopMode();
     this.hideOverlay();
+  }
+
+  forceDesktopMode() {
+    // Method 1: Set viewport to desktop width
+    let viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=1024, initial-scale=0.5, user-scalable=yes');
+    } else {
+      // Create viewport meta tag if it doesn't exist
+      viewport = document.createElement('meta');
+      viewport.name = 'viewport';
+      viewport.content = 'width=1024, initial-scale=0.5, user-scalable=yes';
+      document.head.appendChild(viewport);
+    }
+
+    // Method 2: Add CSS to force desktop layout
+    const desktopModeStyles = `
+      <style id="desktop-mode-override">
+        /* Force desktop layout */
+        body {
+          min-width: 1024px !important;
+          overflow-x: auto !important;
+        }
+        
+        /* Enable zoom and pan */
+        html {
+          transform-origin: 0 0;
+          width: 1024px !important;
+        }
+        
+        /* Prevent mobile-specific responsive styles */
+        @media screen and (max-width: 768px) {
+          * {
+            max-width: none !important;
+            width: auto !important;
+          }
+        }
+        
+        /* Ensure content is scrollable horizontally */
+        * {
+          box-sizing: border-box;
+        }
+      </style>
+    `;
+    
+    // Remove existing desktop mode styles if any
+    const existingStyles = document.querySelector('#desktop-mode-override');
+    if (existingStyles) {
+      existingStyles.remove();
+    }
+    
+    // Add new desktop mode styles
+    document.head.insertAdjacentHTML('beforeend', desktopModeStyles);
+
+    // Method 3: Try to trigger browser's request desktop site (limited browser support)
+    try {
+      // Some browsers support this property
+      if ('requestDesktopSite' in navigator) {
+        navigator.requestDesktopSite();
+      }
+      
+      // Alternative approach: modify user agent string for future requests
+      if ('userAgentData' in navigator) {
+        navigator.userAgentData.mobile = false;
+      }
+    } catch (e) {
+      console.log('Browser does not support programmatic desktop mode switching');
+    }
+
+    // Method 4: Show instruction overlay if automatic methods don't work
+    setTimeout(() => {
+      if (window.innerWidth <= 768) {
+        this.showDesktopModeInstructions();
+      }
+    }, 1000);
+  }
+
+  showDesktopModeInstructions() {
+    // Create instruction overlay
+    const instructionOverlay = document.createElement('div');
+    instructionOverlay.id = 'desktop-mode-instructions';
+    instructionOverlay.innerHTML = `
+      <div class="mobile-overlay-backdrop">
+        <div class="mobile-overlay-content">
+          <div class="mobile-overlay-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 16H21L19 18L21 20H13V16ZM3 4V20H11V22H1V2H11V4H3Z" fill="#3b82f6"/>
+            </svg>
+          </div>
+          <h2 class="mobile-overlay-title">Enable Desktop Mode</h2>
+          <p class="mobile-overlay-description">
+            For the best experience, please enable "Desktop Mode" or "Request Desktop Site" in your browser:
+          </p>
+          <ul class="mobile-overlay-list">
+            <li><strong>Chrome/Edge:</strong> Menu → "Desktop site" checkbox</li>
+            <li><strong>Firefox:</strong> Menu → "Desktop site" toggle</li>
+            <li><strong>Safari:</strong> Share button → "Request Desktop Website"</li>
+            <li><strong>Samsung Internet:</strong> Menu → "Desktop mode"</li>
+          </ul>
+          <div class="mobile-overlay-actions">
+            <button class="mobile-overlay-btn mobile-overlay-btn-primary" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()">
+              I've Enabled Desktop Mode
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(instructionOverlay);
   }
 
   goBack() {
