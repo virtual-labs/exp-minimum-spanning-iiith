@@ -121,23 +121,6 @@
       "difficulty": "hard"
     },
     {
-      "question": "In the Union-Find data structure used in Kruskal's algorithm, what is the purpose of path compression?",
-      "answers": {
-        "a": "To reduce the memory usage of the algorithm",
-        "b": "To make the Find operation faster by flattening the tree structure",
-        "c": "To ensure that cycles are detected correctly",
-        "d": "To sort the edges in ascending order of weight"
-      },
-      "explanations": {
-        "a": "Incorrect. Path compression doesn't significantly affect memory usage. Its main benefit is improving time complexity.",
-        "b": "Correct! Path compression flattens the tree structure in Union-Find, making subsequent Find operations much faster by reducing the depth of trees.",
-        "c": "Incorrect. Cycle detection is handled by checking if two vertices are in the same component, not by path compression specifically.",
-        "d": "Incorrect. Edge sorting is done separately before applying Kruskal's algorithm. Path compression optimizes the Union-Find operations."
-      },
-      "correctAnswer": "b",
-      "difficulty": "hard"
-    },
-    {
       "question": "Consider a complete graph with 5 vertices where each edge weight is randomly assigned. If you run both Kruskal's and Prim's algorithms, which statement is guaranteed to be true?",
       "answers": {
         "a": "Both algorithms will select edges in the same order",

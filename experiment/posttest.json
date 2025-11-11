@@ -70,20 +70,20 @@
       "difficulty": "medium"
     },
     {
-      "question": "Given edges AB(1), AC(4), BC(2), BD(3), CD(1), DE(2), CE(5), what is the total weight of the MST using Kruskal's algorithm?",
+      "question": "Given a graph with vertices {A, B, C, D, E} and edges: AB(1), AC(4), BC(2), BD(3), CD(1), DE(2), CE(5), what is the total weight of the Minimum Spanning Tree if we use Kruskal's algorithm?",
       "answers": {
-        "a": "7",
-        "b": "8",
-        "c": "9",
-        "d": "10"
+        "a": "5",
+        "b": "6",
+        "c": "7",
+        "d": "8"
       },
       "explanations": {
-        "a": "Incorrect. This is too low. Check your edge selections carefully.",
-        "b": "Incorrect. Recalculate by selecting edges in order: AB(1), CD(1), BC(2), BD(3), DE(2).",
-        "c": "Correct! Kruskal's selects edges in order: AB(1), CD(1), BC(2), DE(2), BD(3). Total: 1+1+2+2+3=9. Note that CE(5) and AC(4) are skipped because they would create cycles.",
-        "d": "Incorrect. This includes an extra edge that would create a cycle."
+        "a": "Incorrect. This is too low. We need 4 edges for 5 vertices (V-1 edges).",
+        "b": "Correct! Kruskal's algorithm selects edges in sorted order by weight: AB(1), CD(1), BC(2), DE(2). Total weight: 1+1+2+2=6. The edges AC(4), BD(3), and CE(5) are either skipped because they would create cycles or are not needed once we have 4 edges.",
+        "c": "Incorrect. This includes one edge that is not selected in the MST.",
+        "d": "Incorrect. This is too high. Recheck which edges are selected."
       },
-      "correctAnswer": "c",
+      "correctAnswer": "b",
       "difficulty": "medium"
     },
     {
