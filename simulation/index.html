@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minimum Spanning Trees - Discrete Mathematics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="mobile-detection.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <div class="max-w-7xl mx-auto px-4 pb-16 space-y-8">
+
+    <section id="challenge-section" class="bg-white p-6 rounded-xl shadow-lg mb-6">
+      <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+        <div class="flex-1">
+          <h3 class="font-semibold text-blue-800 mb-3">MST Builder</h3>
+          <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <select id="modeSelect" class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select an algorithm to start</option>
+              <option value="kruskal">Kruskal's Algorithm</option>
+              <option value="prim">Prim's Algorithm</option>
+            </select>
+            <button onclick="startAutoSolve()" class="btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm" id="autoSolveBtn" disabled>
+              Auto Solve
+            </button>
+             <button onclick="executePrevStep()" class="btn bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded text-sm hidden" id="prevStepBtn" disabled>
+              Previous Step
+            </button>
+            <button onclick="executeNextStep()" class="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm hidden" id="nextStepBtn" disabled>
+              Next Step
+            </button>
+           
+          </div>
+          <p id="modeQuestion" class="text-gray-600 mt-2 text-sm">
+            Select an algorithm to start!
+          </p>
+        </div>
+        <div class="btn-group">
+          <button onclick="generateNewGraph()" class="btn bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm">
+            New Graph
+          </button>
+          <button onclick="resetTree()" class="btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+            Reset Tree
+          </button>
+        </div>
+      </div>
+      <div id="feedback" class="mt-3 p-2 rounded hidden"></div>
+      
+      <!-- Progress Bar -->
+      <div id="progressContainer" class="mt-3 hidden">
+        <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
+          <span>Algorithm Progress</span>
+          <span id="progressText">0 / 0 steps completed</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="game-section" class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="flex flex-col lg:flex-row h-[600px] lg:h-[700px]">
+        <!-- Left side: Canvas -->
+        <div class="flex-1 p-4">
+          <div class="game-container h-full">
+            <canvas id="graphCanvas" class="w-full h-full"></canvas>
+          </div>
+        </div>
+        
+        <!-- Right side: Algorithm Trace -->
+        <div class="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-gray-200 bg-slate-50">
+          <div class="p-4 h-full flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-semibold text-slate-800">Learning Trace</h4>
+              <button onclick="clearUserTrace()" class="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 rounded border border-slate-300 hover:bg-white transition-colors">
+                Clear
+              </button>
+            </div>
+            <div id="algorithmTrace" class="flex-1 overflow-hidden">
+              <div id="traceContent" class="h-full overflow-y-auto space-y-2 pr-2">
+                <div class="text-sm text-slate-500 italic text-center py-8">
+                  Start an algorithm and make your choices to see your learning progress here!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Congratulations Overlay -->
+    <div id="congratsOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-2xl p-8 max-w-lg mx-4 text-center shadow-2xl transform transition-all">
+        <div class="text-6xl mb-4">🎉</div>
+        <h2 class="text-2xl font-bold text-green-600 mb-3">Congratulations!</h2>
+        <div class="text-gray-700 mb-6" id="congratsMessage">
+          You've successfully completed the Minimum Spanning Tree algorithm!
+        </div>
+        <div class="space-y-3">
+          <button onclick="hideCongratsOverlay()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors transform hover:scale-105">
+            Try Another Algorithm
+          </button>
+          <button onclick="generateNewGraph(); hideCongratsOverlay();" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors transform hover:scale-105">
+            Generate New Graph
+          </button>
+          <button onclick="hideCongratsOverlay()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Controls Button -->
+    <div class="floating-button primary" id="controlsButton">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+      </svg>
+    </div>
+    
+    <!-- Floating Controls Panel -->
+    <div class="floating-panel" id="controlsPanel">
+      <div class="floating-panel-header">
+        <h3 class="panel-title">Graph Parameters</h3>
+        <div class="floating-panel-close" id="controlsPanelClose">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </div>
+      </div>
+      <div class="floating-panel-content space-y-4">
+        <div class="bg-indigo-50 p-3 rounded-lg">
+          <h3 class="font-semibold text-sm text-indigo-800 mb-3">Parameters</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">
+                Vertices: <span id="vertexCountValue">6</span>
+              </label>
+              <input type="range" id="vertexCountSlider" min="4" max="10" value="6" step="1" 
+                     class="w-full accent-indigo-600" onchange="updateVertexCount()">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">
+                Edge Density: <span id="edgeDensityValue">0.6</span>
+              </label>
+              <input type="range" id="edgeDensitySlider" min="0.3" max="0.9" value="0.6" step="0.1" 
+                     class="w-full accent-indigo-600" onchange="updateEdgeDensity()">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">
+                Max Weight: <span id="weightRangeValue">20</span>
+              </label>
+              <input type="range" id="weightRangeSlider" min="5" max="50" value="20" step="5" 
+                     class="w-full accent-indigo-600" onchange="updateWeightRange()">
+            </div>
+          </div>
+        </div>
+        <div id="graphInfo" class="bg-green-50 p-3 rounded-lg">
+          <h3 class="font-semibold text-sm text-green-800 mb-2">Graph Info</h3>
+          <div class="text-xs space-y-1 text-gray-600">
+            <p>Vertices: <span id="vertexCount">6</span></p>
+            <p>Edges: <span id="edgeCount">0</span></p>
+            <p>Selected Edges: <span id="selectedEdges">0</span></p>
+            <p>Current Weight: <span id="totalWeight">0</span></p>
+            <p>MST Weight: <span id="mstWeight">0</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Info Button -->
+    <div class="floating-button secondary" id="infoButton">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+      </svg>
+    </div>
+    
+    <div class="floating-panel" id="infoPanel">
+      <div class="floating-panel-header">
+        <h3 class="panel-title">MST Algorithms</h3>
+        <div class="floating-panel-close" id="infoPanelClose">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </div>
+      </div>
+      <div class="floating-panel-content space-y-4">
+        <div class="bg-blue-50 p-3 rounded-lg">
+          <h3 class="font-semibold text-sm text-blue-800 mb-2">Kruskal's Algorithm</h3>
+          <div class="text-xs space-y-1 text-gray-600">
+            <p>• Sort edges by weight</p>
+            <p>• Add edge if no cycle formed</p>
+            <p>• Uses Union-Find structure</p>
+            <p>• Click the correct next edge!</p>
+          </div>
+        </div>
+        <div class="bg-purple-50 p-3 rounded-lg">
+          <h3 class="font-semibold text-sm text-purple-800 mb-2">Prim's Algorithm</h3>
+          <div class="text-xs space-y-1 text-gray-600">
+            <p>• Start from any vertex</p>
+            <p>• Always add minimum weight edge</p>
+            <p>• Grows tree from single vertex</p>
+            <p>• Click the correct next edge!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theory Section -->
+    <section class="grid md:grid-cols-3 gap-6">
+      <div class="card bg-white p-4 rounded-xl shadow">
+        <h2 class="text-2xl font-semibold text-green-700 mb-3">Spanning Trees</h2>
+        <div class="space-y-3 text-sm">
+          <p class="text-gray-700">A spanning tree is a subgraph that includes all vertices and is both connected and acyclic.</p>
+          <div class="bg-green-100 p-3 rounded">
+            <p class="font-medium text-green-800 mb-2">Properties:</p>
+            <ul class="list-disc pl-4 space-y-1 text-gray-700">
+              <li>Contains exactly n-1 edges for n vertices</li>
+              <li>Connects all vertices with minimum edges</li>
+              <li>Contains no cycles</li>
+              <li>Removal of any edge disconnects the graph</li>
+            </ul>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-medium text-gray-800">Applications:</p>
+            <p class="text-gray-700">Network design, cluster analysis, image segmentation, and approximation algorithms.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card bg-white p-4 rounded-xl shadow">
+        <h2 class="text-2xl font-semibold text-blue-700 mb-3">Kruskal's Algorithm</h2>
+        <div class="space-y-3 text-sm">
+          <p class="text-gray-700">A greedy algorithm that finds the MST by sorting edges and adding them if they don't create cycles.</p>
+          <div class="bg-blue-100 p-3 rounded">
+            <p class="font-medium text-blue-800 mb-2">Algorithm Steps:</p>
+            <ol class="list-decimal pl-4 space-y-1 text-gray-700">
+              <li>Sort all edges by weight</li>
+              <li>Initialize Union-Find structure</li>
+              <li>For each edge, add if no cycle is formed</li>
+              <li>Stop when n-1 edges are added</li>
+            </ol>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-medium text-gray-800">Time Complexity:</p>
+            <p class="text-gray-700">O(E log E) where E is the number of edges, dominated by the sorting step.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-white p-4 rounded-xl shadow">
+        <h2 class="text-2xl font-semibold text-purple-700 mb-3">Prim's Algorithm</h2>
+        <div class="space-y-3 text-sm">
+          <p class="text-gray-700">A greedy algorithm that grows the MST from a starting vertex by always adding the minimum weight edge.</p>
+          <div class="bg-purple-100 p-3 rounded">
+            <p class="font-medium text-purple-800 mb-2">Algorithm Steps:</p>
+            <ol class="list-decimal pl-4 space-y-1 text-gray-700">
+              <li>Start with any vertex</li>
+              <li>Add to priority queue all edges from current tree</li>
+              <li>Select minimum weight edge to unvisited vertex</li>
+              <li>Repeat until all vertices are included</li>
+            </ol>
+          </div>
+          <div class="bg-gray-100 p-3 rounded">
+            <p class="font-medium text-gray-800">Time Complexity:</p>
+            <p class="text-gray-700">O(E log V) with binary heap, O(E + V log V) with Fibonacci heap.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="MST.js"></script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+</html>
