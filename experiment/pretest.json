@@ -2,38 +2,140 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What is a spanning tree of a graph?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "A tree that connects all vertices with exactly (V-1) edges and no cycles",
+        "b": "A tree that includes all edges of the original graph",
+        "c": "A tree that connects some vertices with the minimum number of edges",
+        "d": "A tree that has cycles but connects all vertices"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct! A spanning tree connects all V vertices using exactly (V-1) edges without forming any cycles. This is the fundamental definition of a spanning tree.",
+        "b": "Incorrect. A spanning tree uses only a subset of edges from the original graph, specifically (V-1) edges out of all possible edges.",
+        "c": "Incorrect. A spanning tree must connect ALL vertices, not just some of them. It uses the minimum number of edges needed to maintain connectivity.",
+        "d": "Incorrect. Trees by definition cannot have cycles. A spanning tree is acyclic and connects all vertices."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "How many edges does a Minimum Spanning Tree have if the graph has 6 vertices?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "6 edges",
+        "b": "5 edges",
+        "c": "7 edges",
+        "d": "It depends on the original graph"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. This would be V edges, but a spanning tree always has exactly (V-1) edges.",
+        "b": "Correct! A spanning tree of a graph with V vertices always has exactly (V-1) edges. So for 6 vertices, it has 6-1 = 5 edges.",
+        "c": "Incorrect. This would be more than (V-1) edges, which would create cycles and violate the tree property.",
+        "d": "Incorrect. The number of edges in a spanning tree is always (V-1) regardless of how many edges the original graph has."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is the main goal of finding a Minimum Spanning Tree?",
+      "answers": {
+        "a": "To find the shortest path between two specific vertices",
+        "b": "To connect all vertices with the minimum total edge weight while avoiding cycles",
+        "c": "To find the maximum possible total weight while connecting all vertices",
+        "d": "To create as many cycles as possible with minimum weight"
+      },
+      "explanations": {
+        "a": "Incorrect. This describes the shortest path problem, not MST. MST connects all vertices, not just finding a path between two specific ones.",
+        "b": "Correct! The MST problem seeks to connect all vertices using the smallest possible total weight while maintaining the tree property (no cycles).",
+        "c": "Incorrect. We want to minimize the total weight, not maximize it. This would be finding a maximum spanning tree.",
+        "d": "Incorrect. Trees cannot have cycles by definition. The goal is to avoid cycles entirely while minimizing weight."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "In Kruskal's algorithm, what happens when you encounter an edge that would create a cycle?",
+      "answers": {
+        "a": "Add the edge anyway to ensure all vertices are connected",
+        "b": "Skip the edge and continue with the next smallest edge",
+        "c": "Stop the algorithm immediately",
+        "d": "Remove a previously added edge and then add this edge"
+      },
+      "explanations": {
+        "a": "Incorrect. Adding an edge that creates a cycle violates the tree property. Kruskal's algorithm specifically avoids creating cycles.",
+        "b": "Correct! Kruskal's algorithm skips any edge that would create a cycle and moves on to the next smallest available edge. This maintains the acyclic property.",
+        "c": "Incorrect. The algorithm continues running until it has selected (V-1) edges that form a spanning tree.",
+        "d": "Incorrect. Once an edge is added to the MST in Kruskal's algorithm, it stays. We don't remove previously added edges."
+      },
+      "correctAnswer": "b",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Consider a graph with edges: AB(3), AC(1), BC(4), AD(2), BD(5), CD(6). Using Prim's algorithm starting from vertex A, which edge is selected second?",
+      "answers": {
+        "a": "AB with weight 3",
+        "b": "AD with weight 2",
+        "c": "BC with weight 4",
+        "d": "AC with weight 1"
+      },
+      "explanations": {
+        "a": "Incorrect. After selecting AC(1) first, the available edges from {A,C} are AB(3), AD(2), BC(4), CD(6). AD(2) has the smallest weight.",
+        "b": "Correct! Starting from A, we first select AC(1). Then from vertices {A,C}, the available edges are AB(3), AD(2), BC(4), CD(6). AD(2) has the minimum weight.",
+        "c": "Incorrect. BC(4) is not the minimum weight edge available from the current tree {A,C}.",
+        "d": "Incorrect. AC(1) would be selected first, not second, as it's the minimum weight edge from starting vertex A."
+      },
+      "correctAnswer": "b",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the key difference between Kruskal's and Prim's algorithms?",
+      "answers": {
+        "a": "Kruskal's always produces a different MST than Prim's",
+        "b": "Kruskal's considers all edges globally while Prim's grows the tree from a starting vertex",
+        "c": "Kruskal's is faster for dense graphs while Prim's is faster for sparse graphs",
+        "d": "Kruskal's allows cycles while Prim's doesn't"
+      },
+      "explanations": {
+        "a": "Incorrect. Both algorithms produce an MST with the same total weight. If edge weights are unique, they produce the exact same MST.",
+        "b": "Correct! Kruskal's sorts all edges and considers them globally, while Prim's starts from one vertex and grows the tree by always adding the minimum edge that connects to a new vertex.",
+        "c": "Incorrect. It's the opposite: Kruskal's is generally better for sparse graphs, while Prim's can be more efficient for dense graphs.",
+        "d": "Incorrect. Neither algorithm allows cycles. Both maintain the tree property throughout execution."
+      },
+      "correctAnswer": "b",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Given a graph where all edge weights are distinct, how many different Minimum Spanning Trees can exist?",
+      "answers": {
+        "a": "Multiple MSTs with different total weights",
+        "b": "Multiple MSTs with the same total weight",
+        "c": "Exactly one unique MST",
+        "d": "No MST can exist"
+      },
+      "explanations": {
+        "a": "Incorrect. All MSTs of the same graph must have the same total weight by definition.",
+        "b": "Incorrect. When all edge weights are distinct, the MST is unique.",
+        "c": "Correct! When all edge weights in a graph are distinct (no ties), there is exactly one unique Minimum Spanning Tree. Edge weight ties are the only reason multiple MSTs can exist.",
+        "d": "Incorrect. As long as the graph is connected, an MST will always exist."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "hard"
+    },
+    {
+      "question": "Consider a complete graph with 5 vertices where each edge weight is randomly assigned. If you run both Kruskal's and Prim's algorithms, which statement is guaranteed to be true?",
+      "answers": {
+        "a": "Both algorithms will select edges in the same order",
+        "b": "The total weight of both resulting MSTs will be equal",
+        "c": "Kruskal's will always finish faster than Prim's",
+        "d": "The algorithms will select completely different sets of edges"
+      },
+      "explanations": {
+        "a": "Incorrect. The algorithms use different strategies and will likely select edges in different orders.",
+        "b": "Correct! Both algorithms are guaranteed to find a Minimum Spanning Tree with the same total weight, even if they select edges in different orders or choose different edges when weights are tied.",
+        "c": "Incorrect. The relative performance depends on the implementation and graph characteristics, not on which algorithm is inherently faster.",
+        "d": "Incorrect. While the algorithms might select different edges, they could also select many of the same edges, especially when edge weights are distinct."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
     }
   ]
 }

@@ -1,1 +1,4 @@
-### Aim of the experiment
+- To understand the concept of **spanning trees** and the criteria that define a **minimum spanning tree (MST)** in a weighted graph.
+- To explore and apply **Kruskal’s and Prim’s algorithms** for computing MSTs through step-by-step visualization.
+- To interactively construct spanning trees and analyze them for validity, optimality, and connectivity.
+- To observe real-world relevance of MSTs in network optimization, such as communication, transportation, and clustering systems.
